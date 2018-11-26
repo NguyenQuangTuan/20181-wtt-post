@@ -1,7 +1,5 @@
-const parse_object = require('./parse-object')
-const stringify_object = require('./stringify-object')
+const parse_html = require('./parse-html')
 
 module.exports = {
-  parse_object,
-  stringify_object
+  parse_html,
 }

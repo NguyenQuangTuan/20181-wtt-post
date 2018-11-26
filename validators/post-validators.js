@@ -11,7 +11,13 @@ const validator = new Validator({ messages: additional_error_messages })
 let post = {
   type: 'object',
   props: {
-    
+    title: { type: 'string' },
+    content: { type: 'string' },
+    tags: {
+      min: 1,
+      type: 'array',
+      item: { type: 'string' }
+    },
   }
 }
 

@@ -15,19 +15,24 @@ app.use(body_parser.json())
 
 // Data Context
 const mysql_data_context = require('../../repositories/mysql-context')(config.mysql)
-// mysql_data_context.sequelize.sync()
-// // Repositories
-const postRepository = require('../../repositories/post-repository')
 
-const post_repository = new postRepository(mysql_data_context)
+// Search Engine
+const elasticsearch_engine = require('../../repositories/elasticsearch-engine')(config.elasticsearch)
 
 // Message Queue
+const KafkaProducer = require('../../messaging/kafka-producer')
 
+const kafka_producer = new KafkaProducer(config.message_producer.options, config.message_producer.topic)
+
+// Repositories
+const postRepository = require('../../repositories/post-repository')
+
+const post_repository = new postRepository(elasticsearch_engine)
 
 // Services
 const postService = require('../../services/post-service')
 
-const post_service = new postService(post_repository)
+const post_service = new postService(post_repository, kafka_producer)
 
 // Controllers
 const postController = require('./controllers/post-controller')

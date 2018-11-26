@@ -10,7 +10,25 @@
       "name": "Launch API",
       "program": "${workspaceFolder}/app/api/app.js",
       "env": {
-        "NODE_ENV": "local" 
+        "NODE_ENV": "local"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Worker",
+      "program": "${workspaceFolder}/app/worker/app.js",
+      "env": {
+        "NODE_ENV": "local"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Test kafka",
+      "program": "${workspaceFolder}/scripts/kafka-test.js",
+      "env": {
+        "NODE_ENV": "local"
       }
     }
   ]

@@ -10,19 +10,62 @@ module.exports = class {
   constructor(post_service) {
     this.post_service = post_service
 
+    this.autocomplete = this.autocomplete.bind(this)
     this.find_all = this.find_all.bind(this)
     this.find_one = this.find_one.bind(this)
-    this.creare = this.creare.bind(this)
+    this.create = this.create.bind(this)
     this.update = this.update.bind(this)
-    this.detele = this.detele.bind(this)
+    this.delete = this.delete.bind(this)
+  }
+
+  autocomplete(req, res, next) {
+    let { title, content } = req.query
+    let list_query_must = Object.assign({}, { title, content })
+
+    let condition = Object.assign({}, { list_query_must: handle_condition(list_query_must) })
+
+    let select = ['title', 'post_id']
+    let offset = 0
+    let limit = 10
+
+    this.post_service.autocomplete(condition, select, offset, limit, (err, posts) => {
+      if (err) next(err)
+      else {
+        res.posts = { posts }
+        next()
+      }
+    })
   }
 
   find_all(req, res, next) {
-    let condition = {}
-    let select = req.fields ? req.fields.split(' ') : null
+    let { post_ids, title, content, user_id, rating_average, tags } = req.query
+    if (post_ids) {
+      post_ids = post_ids
+        .trim()
+        .split(',')
+        .map(post_id => post_id.trim())
+    }
+
+    if (tags) {
+      tags = tags
+        .trim()
+        .split(',')
+        .map(tag => tag.trim())
+    }
+
+    let list_query_must = Object.assign({}, { title, content, user_id, rating_average, tags })
+    let list_query_should = Object.assign({}, { post_ids })
+    let condition = Object.assign({}, { list_query_must: handle_condition(list_query_must) }, { list_query_should: handle_condition(list_query_should) })
+
+    let select = req.fields ? req.fields.split(' ') : []
     let offset = req.options.offset || req.options.skip
     let limit = req.options.limit
-    let order_by = req.options.sort ? req.options.sort : { created_at: -1 }
+    let order_by = req.options.sort ? req.options.sort : {}
+    let order_by_keys = Object.keys(order_by)
+    if (order_by_keys.length == 0) order_by = []
+    if (order_by_keys.length > 0) {
+      order_by = order_by_keys.map(key => ({ [key]: (order_by[key] == -1) ? 'desc' : 'asc' }))
+    }
 
     this.post_service.find_all(condition, select, offset, limit, order_by, (err, posts) => {
       if (err) next(err)
@@ -36,7 +79,7 @@ module.exports = class {
   find_one(req, res, next) {
     let { post_id } = req.params
     let condition = { post_id }
-    let select = req.fields ? req.fields.split(' ') : null
+    let select = req.fields ? req.fields.split(' ') : []
 
     this.post_service.find_one(condition, select, (err, post) => {
       if (err) next(err)
@@ -47,12 +90,15 @@ module.exports = class {
     })
   }
 
-  creare(req, res, next) {
+  create(req, res, next) {
     let { post } = req.body
+    let { user_id } = req.authen_user
+    post = Object.assign(post, { user_id })
+
     this.post_service.create(post, (err, created) => {
       if (err) next(err)
       else {
-        res.created = { created }
+        res.created = { post: created }
         next()
       }
     })
@@ -71,10 +117,10 @@ module.exports = class {
     })
   }
 
-  detele(req, res, next) {
+  delete(req, res, next) {
     let { post_id } = req.params
 
-    this.post_service.detele(post_id, (err, deleted) => {
+    this.post_service.delete(post_id, (err, deleted) => {
       if (err) next(err)
       else {
         res.deleted = { deleted }
@@ -82,4 +128,17 @@ module.exports = class {
       }
     })
   }
+}
+
+const handle_condition = (list_query) => {
+  let condition = {}
+
+  let list_query_keys = Object.keys(list_query)
+  list_query_keys.forEach(key => {
+    if (list_query[key] != undefined) {
+      condition = Object.assign(condition, { [key]: list_query[key] })
+    }
+  })
+
+  return condition
 }

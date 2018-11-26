@@ -27,5 +27,15 @@ module.exports = {
 
     if (err) next(err)
     else next()
+  },
+  
+  validate_update: (req, res, next) => {
+    let { post } = req.body
+
+    let validatees = { post }
+    let err = conduct_validating(validatees)
+
+    if (err) next(err)
+    else next()
   }
 }

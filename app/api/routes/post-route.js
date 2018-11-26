@@ -4,10 +4,16 @@
  */
 
 const tokent_middleware = require('../middlewares/tokent-middleware')
-const role_middleware = require('../middlewares/role-middleware')
 const post_middleware = require('../middlewares/post-middleware')
 
 module.exports = (app, post_controller) => {
+  app.get('/posts/autocomplete',
+    post_controller.autocomplete,
+    (req, res) => {
+      return res.status(200).send(res.posts)
+    }
+  )
+
   app.get('/posts',
     post_controller.find_all,
     (req, res) => {
@@ -24,9 +30,8 @@ module.exports = (app, post_controller) => {
 
   app.post('/posts',
     tokent_middleware.verify,
-    role_middleware.check_user,
-    tokent_middleware.check_authen_valid,
-    post_controller.creare,
+    post_middleware.validate_create,
+    post_controller.create,
     (req, res) => {
       return res.status(200).send(res.created)
     }
@@ -34,8 +39,7 @@ module.exports = (app, post_controller) => {
 
   app.put('/posts/:post_id',
     tokent_middleware.verify,
-    role_middleware.check_user,
-    tokent_middleware.check_authen_valid,
+    post_middleware.validate_update,
     post_controller.update,
     (req, res) => {
       return res.status(200).send(res.updated)
@@ -44,9 +48,7 @@ module.exports = (app, post_controller) => {
 
   app.delete('/posts/:post_id',
     tokent_middleware.verify,
-    role_middleware.check_user,
-    tokent_middleware.check_authen_valid,
-    post_controller.detele,
+    post_controller.delete,
     (req, res) => {
       return res.status(200).send(res.deleted)
     }
