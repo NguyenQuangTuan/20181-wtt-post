@@ -2,23 +2,23 @@
 
 ## Build 
 ```
- sudo docker build -t wtt-posts:{ version } .
+ sudo docker build -t wtt-post:{ version } .
 ```
  ## Run 
 ```
- sudo docker run --rm -p {port}:8080 --env NODE_ENV={ env } wtt-posts:{version} (dev: 8082, main: 8182)
+ sudo docker run --rm -p {port}:8080 --env NODE_ENV={ env } wtt-post:{version} (dev: 8082, main: 8182)
  ```
  ## Create tag
  ```
- sudo docker tag wtt-posts:{ version } tuannq(repo)/wtt(group)/wtt-posts:{ version }
+ sudo docker tag wtt-post:{ version } tuannq(repo)/wtt(group)/wtt-post:{ version }
  ```
  ## Push tag
  ```
- sudo docker push tuannq(repo)/wtt(group)/wtt-posts:{ version }
+ sudo docker push tuannq(repo)/wtt(group)/wtt-post:{ version }
  ```
  ## Pull tag
  ```
- sudo docker pull tuannq(repo)/wtt(group)/wtt-posts:{ version }
+ sudo docker pull tuannq(repo)/wtt(group)/wtt-post:{ version }
  ```
  ## View image 
  ```
