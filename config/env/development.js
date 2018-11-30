@@ -15,7 +15,7 @@ module.exports = {
 		}
 	},
 	elasticsearch: {
-		host: '18.223.252.92:9200',
+		host: '18.191.172.251:9200',
 		log: 'trace',
 		index_post: 'wtt_post_dev',
 		type: '_doc'

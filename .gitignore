@@ -2,9 +2,8 @@
 
 /config/env/*
 !/config/env/development.js
-!/config/env/production.js
+
 
 
 /config/workers/*
 !/config/workers/development.js
-!/config/workers/production.js
