@@ -1,5 +1,9 @@
 post = {
 	"settings": {
+		"index": {
+			"number_of_shards": 1,
+			"number_of_replicas": 1
+		},
 		"analysis": {
 			"analyzer": {
 				"autocomplete": {
@@ -20,17 +24,17 @@ post = {
 					]
 				},
 				"lowercase": {
-        			"tokenizer": "lowercase"
-        		},
-        		"filter_html": {
-        			"tokenizer": "standard",
-        			"char_filter": [
-            			"html_strip"
-        			],
-        			"filter": [
-			            "lowercase"
-        			]
-        		}
+					"tokenizer": "lowercase"
+				},
+				"filter_html": {
+					"tokenizer": "standard",
+					"char_filter": [
+						"html_strip"
+					],
+					"filter": [
+						"lowercase"
+					]
+				}
 			},
 			"tokenizer": {
 				"prd_edge_ngram": {
@@ -81,21 +85,18 @@ post = {
 				"user_id": {
 					"type": "keyword"
 				},
-				"rating_average": {
-					"type": "float"
-				},
-				"total_review": {
+				"total_like": {
 					"type": "long"
 				},
 				"tags": {
-        			"type": "text",
-        			"analyzer": "lowercase",
-        			"fields": {
-            			"keyword": {
-		            		"type": "keyword"
-            			}
-        			}
-        		},
+					"type": "text",
+					"analyzer": "lowercase",
+					"fields": {
+						"keyword": {
+							"type": "keyword"
+						}
+					}
+				},
 				"created_at": {
 					"type": "date"
 				},

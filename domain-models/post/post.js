@@ -6,8 +6,7 @@ module.exports = class Post {
   constructor(params) {
     let props = Object.assign({
       post_id: shortid.generate(),
-      rating_average: 0,
-      total_review: 0
+      total_like: 0,
     }, params)
 
     this.post_obj = {
@@ -16,8 +15,7 @@ module.exports = class Post {
       content: props.content,
       short_content: handle_short_content(props.content),
       user_id: props.user_id,
-      rating_average: props.rating_average,
-      total_review: props.total_review,
+      total_like: props.total_like,
       tags: props.tags,
       created_at: handle_created_at(props.created_at),
       updated_at: handle_updated_at(props.updated_at)

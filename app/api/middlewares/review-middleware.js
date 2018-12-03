@@ -1,7 +1,7 @@
-const validator = require('../../../validators/post-validator')
+const validator = require('../../../validators/review-validator')
 
 const validate = {
-  post: post => validator.validate_post({ post })
+  review: review => validator.validate_review({ review })
 }
 
 // gọi hàm validator và chuẩn lại mã lỗi trả về nếu có lỗi 
@@ -20,9 +20,9 @@ const conduct_validating = validatees => {
 
 module.exports = {
   validate_create: (req, res, next) => {
-    let { post } = req.body
+    let { review } = req.body
 
-    let validatees = { post }
+    let validatees = { review }
     let err = conduct_validating(validatees)
 
     if (err) next(err)
@@ -30,9 +30,9 @@ module.exports = {
   },
   
   validate_update: (req, res, next) => {
-    let { post } = req.body
+    let { review } = req.body
 
-    let validatees = { post }
+    let validatees = { review }
     let err = conduct_validating(validatees)
 
     if (err) next(err)

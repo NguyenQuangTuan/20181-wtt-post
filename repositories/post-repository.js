@@ -1,6 +1,5 @@
 const lodash = require('lodash')
 
-const until = require('../utils/index')
 const config = require('../config/config')
 
 module.exports = class PostRepository {
@@ -97,7 +96,7 @@ module.exports = class PostRepository {
 
   }
 
-  find_one(condition = {}, select = null, callback) {
+  find_one(condition = {}, select = [], callback) {
     let { post_id } = condition
 
     this.search_engine_client.search({

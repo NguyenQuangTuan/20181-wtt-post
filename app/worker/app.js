@@ -18,7 +18,7 @@ const kafka_producer = new KafkaProducer(config.message_producer.options, config
 // Services
 
 // Handlers
-const NotificationHandler = require('../../services/worker-handlers/notification-handler')
+const PostHandler = require('../../services/worker-handlers/notification-handler')
 
 const notification_handler = new NotificationHandler()
 

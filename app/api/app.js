@@ -25,22 +25,36 @@ const KafkaProducer = require('../../messaging/kafka-producer')
 const kafka_producer = new KafkaProducer(config.message_producer.options, config.message_producer.topic)
 
 // Repositories
-const postRepository = require('../../repositories/post-repository')
+const PostRepository = require('../../repositories/post-repository')
+const ReviewRepository = require('../../repositories/review-repository')
+const SubReviewRepository = require('../../repositories/sub-review-repository')
 
-const post_repository = new postRepository(elasticsearch_engine)
+const post_repository = new PostRepository(elasticsearch_engine)
+const review_repository = new ReviewRepository(mysql_data_context)
+const sub_review_repository = new SubReviewRepository(mysql_data_context)
 
 // Services
-const postService = require('../../services/post-service')
+const PostService = require('../../services/post-service')
+const ReviewService = require('../../services/review-service')
+const SubReviewService = require('../../services/sub-review-service')
 
-const post_service = new postService(post_repository, kafka_producer)
+const post_service = new PostService(post_repository, kafka_producer)
+const review_service = new ReviewService(review_repository, post_repository, kafka_producer)
+const sub_review_service = new SubReviewService(sub_review_repository, review_repository, post_repository, kafka_producer)
 
 // Controllers
-const postController = require('./controllers/post-controller')
+const PostController = require('./controllers/post-controller')
+const ReviewController = require('./controllers/review-controller')
+const SubReviewController = require('./controllers/sub-review-controller')
 
-const post_controller = new postController(post_service)
+const post_controller = new PostController(post_service)
+const review_controller = new ReviewController(review_service)
+const sub_review_controller = new SubReviewController(sub_review_service)
 
 // Routes
 require('./routes/post-route')(app, post_controller)
+require('./routes/review-route')(app, review_controller)
+require('./routes/sub-review-route')(app, sub_review_controller)
 
 // Error Handling
 app.use((err, req, res, next) => {
