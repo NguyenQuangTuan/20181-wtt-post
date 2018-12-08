@@ -33,12 +33,16 @@ const post_repository = new PostRepository(elasticsearch_engine)
 const review_repository = new ReviewRepository(mysql_data_context)
 const sub_review_repository = new SubReviewRepository(mysql_data_context)
 
+// External service
+const follow_service = require('../../services/external-services/follow-service')
+const user_service = require('../../services/external-services/user-service')
+
 // Services
 const PostService = require('../../services/post-service')
 const ReviewService = require('../../services/review-service')
 const SubReviewService = require('../../services/sub-review-service')
 
-const post_service = new PostService(post_repository, kafka_producer)
+const post_service = new PostService(post_repository, follow_service, user_service, kafka_producer)
 const review_service = new ReviewService(review_repository, post_repository, kafka_producer)
 const sub_review_service = new SubReviewService(sub_review_repository, review_repository, post_repository, kafka_producer)
 

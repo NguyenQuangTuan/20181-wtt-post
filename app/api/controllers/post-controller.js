@@ -93,9 +93,10 @@ module.exports = class {
   create(req, res, next) {
     let { post } = req.body
     let { user_id } = req.authen_user
+    let { token } = req
     post = Object.assign(post, { user_id })
 
-    this.post_service.create(post, (err, created) => {
+    this.post_service.create(post, token, (err, created) => {
       if (err) next(err)
       else {
         res.created = { post: created }

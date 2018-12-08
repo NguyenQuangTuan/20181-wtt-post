@@ -1,4 +1,5 @@
 const async = require('async')
+const lodash = require('lodash')
 const config = require('../config/config')
 const ReviewEvent = require('../domain-models/event/review-event')
 
@@ -34,26 +35,27 @@ module.exports = class ReviewService {
           (err, post) => {
             if (err) return cb(err)
             else if (!post) return cb({ type: 'Not Found' })
-            else return cb(null)
+            else return cb(null, post)
           }
         )
       },
-      cb => {
+      (post, cb) => {
         async.retry(
           config.retry,
           async.apply(this.review_repository.create, review),
           (err, created) => {
             if (err) return cb(err)
             else if (!created) return cb({ type: 'Request Failed' })
-            else return cb(null, created)
+            else return cb(null, post, created)
           }
         )
       },
-      (review, cb) => {
+      (post, review, cb) => {
         let publish_obj = {
           action: ReviewEvent.REVIEW_CREATED,
           payload: {
-            review
+            review,
+            post: lodash.pick(post, ['post_id', 'user_id'])
           }
         }
 
@@ -78,7 +80,7 @@ module.exports = class ReviewService {
         let condition = {
           post_id, user_id, review_id
         }
-         async.retry(
+        async.retry(
           config.retry,
           async.apply(this.review_repository.find_one, condition, null),
           (err, review) => {

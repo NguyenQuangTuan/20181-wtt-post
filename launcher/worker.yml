@@ -1,0 +1,3 @@
+apps:
+  - script   : './app/worker/app.js'
+    name     : 'wtt-post-worker'

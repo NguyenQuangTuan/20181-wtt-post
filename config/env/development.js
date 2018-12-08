@@ -4,7 +4,7 @@ module.exports = {
 		username: 'wtt',
 		password: 'Wtt@20181',
 		database: 'wtt-post',
-		host: '18.191.51.82',
+		host: '18.223.166.127',
 		dialect: 'mysql',
 		dialectOptions: { charset: 'utf8mb4', decimalNumbers: true },
 		define: { charset: 'utf8mb4', collate: 'utf8mb4_unicode_ci' },
@@ -15,7 +15,7 @@ module.exports = {
 		}
 	},
 	elasticsearch: {
-		host: '18.191.172.251:9200',
+		host: '18.223.166.127:9200',
 		log: 'trace',
 		index_post: 'wtt_post_dev',
 		type: '_doc'
@@ -34,4 +34,7 @@ module.exports = {
 		},
 		topic: 'tuan-wtt'
 	},
+	root_url: {
+    api: 'http://18.223.166.127:3000'
+  },
 }

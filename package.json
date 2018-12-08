@@ -23,6 +23,7 @@
     "no-kafka": "^3.3.5",
     "sequelize": "^4.38.0",
     "shortid": "^2.2.14",
-    "underscore": "^1.9.1"
+    "underscore": "^1.9.1",
+    "unirest": "^0.5.1"
   }
 }

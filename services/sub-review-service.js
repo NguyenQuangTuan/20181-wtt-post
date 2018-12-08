@@ -1,4 +1,5 @@
 const async = require('async')
+const lodash = require('lodash')
 const config = require('../config/config')
 const SubReviewEvent = require('../domain-models/event/sub-review-event')
 
@@ -26,10 +27,10 @@ module.exports = class SubReviewService {
   }
 
   create(sub_review, callback) {
+    let { review_id, post_id } = sub_review
+
     async.waterfall([
       cb => {
-        let { review_id, post_id } = sub_review
-
         async.parallel({
           post: cb2 => {
             async.retry(
@@ -52,25 +53,26 @@ module.exports = class SubReviewService {
         }, (err, results) => {
           if (err) return cb(err)
           else if (!results.post || !results.review) return cb({ type: 'Not Found' })
-          else return cb(null)
+          else return cb(null, results.review)
         })
       },
-      cb => {
+      (review, cb) => {
         async.retry(
           config.retry,
           async.apply(this.sub_review_repository.create, sub_review),
           (err, created) => {
             if (err) return cb(err)
             else if (!created) return cb({ type: 'Request Failed' })
-            else return cb(null, created)
+            else return cb(null, review, created)
           }
         )
       },
-      (sub_review, cb) => {
+      (review, sub_review, cb) => {
         let publish_obj = {
           action: SubReviewEvent.SUB_REVIEW_CREATED,
           payload: {
-            sub_review
+            sub_review,
+            review: lodash.pick(review, ['review_id', 'user_id'])
           }
         }
 

@@ -1,12 +1,15 @@
+const lodash = require('lodash')
 const async = require('async')
 const config = require('../config/config')
 const Post = require('../domain-models/post/post')
 const PostEvent = require('../domain-models/event/post-event')
 
 module.exports = class {
-  constructor(post_repository, message_producer) {
+  constructor(post_repository, follow_service, user_service, message_producer) {
     this.post_repository = post_repository
     this.message_producer = message_producer
+    this.follow_service = follow_service
+    this.user_service = user_service
 
     this.autocomplete = this.autocomplete.bind(this)
     this.find_all = this.find_all.bind(this)
@@ -47,7 +50,7 @@ module.exports = class {
     )
   }
 
-  create(post, callback) {
+  create(post, token, callback) {
     post = new Post(post).post
     let { post_id } = post
 
@@ -56,16 +59,45 @@ module.exports = class {
         async.retry(
           config.retry,
           async.apply(this.post_repository.create, post, (err, created) => {
-            return cb(err, created)
+            if (err) return cb(err)
+            else if (!created) return cb({ type: 'Request Failed' })
+            return cb(null)
           })
         )
       },
-      (created, cb) => {
-        if (!created) return cb({ type: 'Request Failed' })
+      cb => {
+        async.parallel({
+          user: cb2 => {
+            async.retry(
+              config.retry,
+              async.apply(this.user_service.find_one, token),
+              (err, user) => {
+                return cb2(err, user)
+              }
+            )
+          },
+          user_follows: cb2 => {
+            async.retry(
+              config.retry,
+              async.apply(this.follow_service.get_list_followme, token),
+              (err, user_ids) => {
+                return cb2(err, user_ids)
+              }
+            )
+          }
+        }, (err, results) => {
+          return cb(err, results.user, results.user_follows)
+        })
+
+      },
+      (user, user_follows, cb) => {
+        user = lodash.pick(user, ['full_name', 'avatar_url'])
+        let new_post = Object.assign(post, user)
         let publish_obj = {
           action: PostEvent.POST_CREATED,
           payload: {
-            post
+            post: new_post,
+            user_follows
           }
         }
 

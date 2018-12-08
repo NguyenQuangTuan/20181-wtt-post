@@ -4,25 +4,22 @@ const workers = require('../../config/workers/' + process.env.NODE_ENV)
 // Data Context
 const mysql_data_context = require('../../repositories/mysql-context')(config.mysql)
 
+// Search Engine
+const elasticsearch_engine = require('../../repositories/elasticsearch-engine')(config.elasticsearch)
+
 // Repositories
+const PostRepository = require('../../repositories/post-repository')
 
-
-// External Services
-
-
-// Message Queue
-const KafkaProducer = require('../../messaging/kafka-producer')
-
-const kafka_producer = new KafkaProducer(config.message_producer.options, config.message_producer.topic)
+const post_repository = new PostRepository(elasticsearch_engine)
 
 // Services
 
 // Handlers
-const PostHandler = require('../../services/worker-handlers/notification-handler')
+const PostHandler = require('../../services/worker-handlers/post-handler')
 
-const notification_handler = new NotificationHandler()
+const post_handler = new PostHandler(post_repository)
 
-const handlers = { notification_handler }
+const handlers = { post_handler }
 
 // Consumer
 const KafkaConsumer = require('../../messaging/kafka-consumer')

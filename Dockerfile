@@ -20,11 +20,10 @@
 # CMD ["python", "app.py"]
 
 FROM node:9.11.1-alpine
-RUN mkdir -p /usr/src/ptpmcn-backend
-WORKDIR /usr/src/ptpmcn-backend
-COPY package.json /usr/src/ptpmcn-backend
+RUN mkdir -p /usr/src/wtt-post
+WORKDIR /usr/src/wtt-post
+COPY package.json /usr/src/wtt-post
 RUN npm install
-RUN npm install pm2 -g
-COPY . /usr/src/ptpmcn-backend
+COPY . /usr/src/wtt-post
 EXPOSE  8080
 CMD [ "node", "./app/api/app.js" ]

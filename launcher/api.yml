@@ -1,0 +1,5 @@
+apps:
+  - script   : './app/api/app.js'
+    name     : 'wtt-post-api'
+    exec_mode: 'cluster'
+    instances: 2

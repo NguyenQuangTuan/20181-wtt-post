@@ -9,7 +9,8 @@ module.exports = class ReviewController {
   }
 
   find_all(req, res, next) {
-    let condition = {}
+    let { post_id } = req.params
+    let condition = { post_id }
     let select = null
     let offset = req.options.offset || req.options.skip
     let limit = req.options.limit

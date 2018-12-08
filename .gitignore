@@ -3,7 +3,7 @@
 /config/env/*
 !/config/env/development.js
 
-
+/docker-compose.yml
 
 /config/workers/*
 !/config/workers/development.js
