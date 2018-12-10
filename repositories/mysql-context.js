@@ -5,8 +5,9 @@ const DataContext = (config) => {
 
   const Review = sequelize.import('./mysql-models/review')
   const SubReview = sequelize.import('./mysql-models/sub-review')
+  const Tag = sequelize.import('./mysql-models/tag')
 
-  return { sequelize, Review, SubReview }
+  return { sequelize, Review, SubReview, Tag }
 }
 
 module.exports = DataContext

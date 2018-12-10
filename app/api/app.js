@@ -28,10 +28,12 @@ const kafka_producer = new KafkaProducer(config.message_producer.options, config
 const PostRepository = require('../../repositories/post-repository')
 const ReviewRepository = require('../../repositories/review-repository')
 const SubReviewRepository = require('../../repositories/sub-review-repository')
+const TagRepository = require('../../repositories/tag-repository')
 
 const post_repository = new PostRepository(elasticsearch_engine)
 const review_repository = new ReviewRepository(mysql_data_context)
 const sub_review_repository = new SubReviewRepository(mysql_data_context)
+const tag_repository = new TagRepository(mysql_data_context)
 
 // External service
 const follow_service = require('../../services/external-services/follow-service')
@@ -41,24 +43,29 @@ const user_service = require('../../services/external-services/user-service')
 const PostService = require('../../services/post-service')
 const ReviewService = require('../../services/review-service')
 const SubReviewService = require('../../services/sub-review-service')
+const TagService = require('../../services/tag-service')
 
 const post_service = new PostService(post_repository, follow_service, user_service, kafka_producer)
 const review_service = new ReviewService(review_repository, post_repository, kafka_producer)
 const sub_review_service = new SubReviewService(sub_review_repository, review_repository, post_repository, kafka_producer)
+const tag_service = new TagService(tag_repository)
 
 // Controllers
 const PostController = require('./controllers/post-controller')
 const ReviewController = require('./controllers/review-controller')
 const SubReviewController = require('./controllers/sub-review-controller')
+const TagController = require('./controllers/tag-controller')
 
 const post_controller = new PostController(post_service)
 const review_controller = new ReviewController(review_service)
 const sub_review_controller = new SubReviewController(sub_review_service)
+const tag_controller = new TagController(tag_service)
 
 // Routes
 require('./routes/post-route')(app, post_controller)
 require('./routes/review-route')(app, review_controller)
 require('./routes/sub-review-route')(app, sub_review_controller)
+require('./routes/tag-route')(app, tag_controller)
 
 // Error Handling
 app.use((err, req, res, next) => {
