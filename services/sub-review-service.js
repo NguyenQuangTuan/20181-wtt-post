@@ -72,7 +72,7 @@ module.exports = class SubReviewService {
           action: SubReviewEvent.SUB_REVIEW_CREATED,
           payload: {
             sub_review,
-            review: lodash.pick(review, ['review_id', 'user_id'])
+            review
           }
         }
 
