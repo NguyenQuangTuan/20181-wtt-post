@@ -9,8 +9,8 @@ module.exports = class SubReviewController {
   }
 
   find_all(req, res, next) {
-    let { post_id } = req.params
-    let condition = { post_id }
+    let { post_id, review_id } = req.params
+    let condition = { post_id, review_id }
     let select = null
     let offset = req.options.offset || req.options.skip
     let limit = req.options.limit
